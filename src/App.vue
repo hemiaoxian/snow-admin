@@ -10,7 +10,6 @@ export default {
 }
 </script>
 
-<style>
-#app {
-}
+<style lang="scss" scoped>
+
 </style>

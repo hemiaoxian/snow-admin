@@ -1,0 +1,45 @@
+.forget-wrapper{
+  height: 100%;
+  padding: 0px 16px;
+  background-color: #f0eff5;
+  .title{
+    text-align: center;
+    font-weight: 600;
+    padding: 30px 0px 20px;
+  }
+  .login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // padding-top: 80px;
+    .avator{
+      width: 100px;
+      height: 100px;
+      background-color: #fff;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      // box-shadow: 0px 1px 5px 0px #333;
+    }
+    .van-cell-group{
+      width: 100%;
+      margin-bottom: 30px;
+      .username{
+        width: 100%;
+        border: 1px solid #dadada;
+        border-bottom: none;
+        border-radius: 4px 4px 0px 0px;
+      }
+      .password{
+        border: 1px solid #dadada;
+        border-radius: 0px 0px 4px 4px;
+      }
+    }
+    .login-btn{
+      width: 100%;
+      margin-bottom: 15px;
+    }
+    .register-btn{
+      width: 100%;
+    }
+  }
+}
