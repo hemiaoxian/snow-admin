@@ -4,10 +4,17 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+// 导入vant框架
+import Vant from 'vant'
+import 'vant/lib/index.css'
+
 // 导入样式文件
 import './assets/style/index.scss'
 
 Vue.config.productionTip = false
+
+// 使用vant
+Vue.use(Vant)
 
 /* eslint-disable no-new */
 new Vue({
