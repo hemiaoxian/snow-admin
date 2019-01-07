@@ -7,8 +7,8 @@
       <img class="avator" src="../assets/logo.png" alt="">
       <!-- 表单 -->
       <van-cell-group>
-        <van-field class="username" clearable focus required border v-model="username" placeholder="手机号" />
-        <van-field class="password" clearable type="password" blur required v-model="password" placeholder="密码" />
+        <van-field class="phone" @blur="validationPhone" clearable focus required border v-model="phone" placeholder="手机号" />
+        <van-field class="password" @blur="validationPassword" clearable type="password" required v-model="password" placeholder="密码" />
         <router-link to="/Forget" class="forget-password">忘记密码?</router-link>
       </van-cell-group>
       <!-- 按钮 -->
@@ -22,27 +22,47 @@
   </div>
 </template>
 <script>
-export { checkPhone } from '@/assets/js/until.js'
+import { checkPhone } from '@/assets/js/until.js'
 export default {
   data () {
     return {
-      username: '',
+      phone: '',
       password: ''
     }
   },
   methods: {
     // 验证手机号码是否正确
-    handleCheckPhone () {
-
+    validationPhone () {
+      checkPhone(this.phone).then(res => {
+        if (!res) {
+          // 提示用户
+          this.$toast('手机号码格式错误')
+        } else {
+          console.log('没毛病')
+        }
+      })
     },
-    blur () {
-      console.log(this.$ref())
+    // 验证密码是否输入
+    validationPassword () {
+      if (!this.password.length) {
+        // 提示用户
+        this.$toast('密码不能为空')
+      }
     },
     // 点击注册按钮跳转到注册页面
     handleToRegister () {
       this.$router.push({
         path: '/Register'
       })
+    }
+  },
+  computed: {
+    isCanLogin () {
+      if (this.phone.length === 0 || this.password.length === 0) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
@@ -73,7 +93,7 @@ export default {
     .van-cell-group{
       width: 100%;
       margin-bottom: 30px;
-      .username{
+      .phone{
         width: 100%;
         border: 1px solid #dadada;
         border-bottom: none;
