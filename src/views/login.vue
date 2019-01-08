@@ -22,14 +22,22 @@
   </div>
 </template>
 <script>
+// 验证手机号码不为空的方法
 // import { checkPhone } from '@/assets/js/until.js'
+// 发请求的接口
 // import { login } from '@/api/index.js'
-import axios from 'axios'
+// webscoket的接口
+// import { initWebSocket } from '@/api/webscoket.js'
+// 引入axios(后期不需要会去掉)
+// import axios from 'axios'
 export default {
   data () {
     return {
+      // 用户的数据
       userID: 'test',
-      password: '123456'
+      password: '123456',
+      // 定义一个为null的变量
+      websock: null
     }
   },
   methods: {
@@ -53,29 +61,70 @@ export default {
     },
     // 点击登录
     handleClickLogin () {
+      // // // 构造发送到后台的数据
+      // const loginData = {
+      //   userID: this.userID,
+      //   password: this.password,
+      //   actionType: 1
+      // }
+      // 利用axios发送请求
+      // login('userLogin', loginData).then(res => {
+      //   console.log(res)
+      // })
+
+      // 利用webscoket发请求
+      // initWebSocket('userLogin', loginData).then(res => {
+      //   console.log(res)
+      // })
+      this.initWebSocket()
+    },
+    initWebSocket () { // 初始化weosocket
+      const wsuri = 'ws://www.snowstormdoll.cn/ws'
+      this.websock = new WebSocket(wsuri)
+      this.websock.onmessage = this.websocketonmessage
+      this.websock.onopen = this.websocketonopen
+      this.websock.onerror = this.websocketonerror
+      this.websock.onclose = this.websocketclose
+    },
+    websocketonopen () { // 连接建立之后执行send方法发送数据
+      // 构造发送到后台的数据
       const loginData = {
         userID: this.userID,
         password: this.password,
         actionType: 1
       }
-      const params = {message: 'userLogin', data: JSON.stringify(loginData)}
-      console.log(params)
-
-      // login(params).then(res => {
-      //   console.log(res)
-      // })
-
-      axios({
-        method: 'post',
-        url: 'https://www.snowstormdoll.cn/ajax',
-        responseType: 'json',
-        data: {
-          message: 'userLogin',
-          data: JSON.stringify(loginData)
+      const params = {message: 'userLogin', data: loginData}
+      this.websocketsend(JSON.stringify(params))
+    },
+    websocketonerror () { // 连接建立失败重连
+      this.initWebSocket()
+    },
+    websocketonmessage (e) { // 数据接收
+      // 接收返回的数据
+      const redata = JSON.parse(e.data)
+      // console.log(redata)
+      // const code = redata.data[0].code
+      if (redata.message === 'userLoginResult') {
+        console.log(redata)
+        if (redata.data[0].result === 0) {
+          console.log('成功了')
+          this.$router.push({
+            path: '/Home'
+          })
+        } else if (redata.data[0].result === 1) {
+          // console('数据库错误')
+          this.$toast('数据库错误')
+        } else if (redata.data[0].result === 2) {
+          // console('第一次')
+          this.$toast('用户名或密码错误')
         }
-      }).then(res => {
-        console.log(res)
-      })
+      }
+    },
+    websocketsend (Data) { // 数据发送
+      this.websock.send(Data)
+    },
+    websocketclose (e) { // 关闭
+      console.log('断开连接', e)
     },
     // 点击注册按钮跳转到注册页面
     handleToRegister () {
@@ -83,6 +132,9 @@ export default {
         path: '/Register'
       })
     }
+  },
+  created () {
+    // this.initWebSocket()
   },
   computed: {
     isCanLogin () {
