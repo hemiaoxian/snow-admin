@@ -103,11 +103,14 @@ export default {
       // 接收返回的数据
       const redata = JSON.parse(e.data)
       // console.log(redata)
-      // const code = redata.data[0].code
+      // 判断是否为登录请求
       if (redata.message === 'userLoginResult') {
         console.log(redata)
         if (redata.data[0].result === 0) {
           console.log('成功了')
+          // 将用户信息存在本地存储中
+          sessionStorage.setItem('userInfo', JSON.stringify(redata.data[0]))
+          // 跳转到首页
           this.$router.push({
             path: '/Home'
           })
