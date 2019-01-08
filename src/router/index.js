@@ -15,6 +15,12 @@ export default new Router({
       component: Login
     },
     {
+      path: '/',
+      redirect: {
+        path: '/Login'
+      }
+    },
+    {
       path: '/Forget',
       name: 'Forget',
       component: Forget
